@@ -25,4 +25,4 @@ Instructions on how to deploy the project to a live system.
 
 ## Demo
 
-https://accident-insurance-next-js.vercel.app/register/form-claim
+https://accident-insurance-react.vercel.app/
