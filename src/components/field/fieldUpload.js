@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
+import { useState } from "react";
 import { PlusCircle, Trash2 } from "react-feather";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
@@ -10,15 +11,21 @@ export default function FieldUpload({
   handleChange,
   contentImg,
 }) {
-  const handleUpload = async (e) => {
-    const reader = new FileReader();
+  const [dataImg, setDataImg] = useState(null);
 
-    reader.onload = function () {
-      handleChange(this.result);
-    };
-    // Read the Files
-    reader.readAsDataURL(e.target.files[0]);
+  const handleUpload = (e) => {
+    setDataImg(e.target.files[0]);
+    if (e.target.files[0].size <= 5000000) {
+      const reader = new FileReader();
+
+      reader.onload = function () {
+        handleChange(this.result);
+      };
+      // Read the Files
+      reader.readAsDataURL(e.target.files[0]);
+    }
   };
+
   return (
     <Box>
       <Typography className="color-primary" mb="10px">
@@ -59,9 +66,11 @@ export default function FieldUpload({
         <Button
           variant="outlined"
           component="label"
-          onChange={(e) => handleUpload(e)}
+          onChange={(e) => {
+            handleUpload(e);
+          }}
           sx={{
-            border: "1px solid #eee",
+            border: `1px solid ${dataImg?.size > 5000000 ? "#ff0000" : "#eee"}`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -82,6 +91,14 @@ export default function FieldUpload({
             {content}
           </Typography>
         </Button>
+      )}
+      {dataImg?.size > 5000000 && (
+        <Typography
+          mt="5px"
+          sx={{ fontWeight: "200", fontSize: "14px", color: "#ff0000" }}
+        >
+          Max image hanya 5 mb
+        </Typography>
       )}
       <Typography
         className="color-primary"
