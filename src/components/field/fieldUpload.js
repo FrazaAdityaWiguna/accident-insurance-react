@@ -1,4 +1,4 @@
-import { Box, Button, Input, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { PlusCircle, Trash2 } from "react-feather";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
@@ -70,7 +70,7 @@ export default function FieldUpload({
             textTransform: "capitalize",
           }}
         >
-          <Input
+          <input
             hidden
             accept="image/*"
             type="file"
