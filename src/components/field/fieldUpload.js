@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Input, Typography } from "@mui/material";
 import { PlusCircle, Trash2 } from "react-feather";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
@@ -70,7 +70,13 @@ export default function FieldUpload({
             textTransform: "capitalize",
           }}
         >
-          <input hidden accept="image/*" type="file" />
+          <Input
+            hidden
+            accept="image/*"
+            type="file"
+            sx={{ display: "none" }}
+            required
+          />
           <PlusCircle color="#5f52eb" size={35} />
           <Typography color="#8c8b8b" mt="10px">
             {content}

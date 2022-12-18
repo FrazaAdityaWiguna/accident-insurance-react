@@ -6,6 +6,7 @@ import FormSimStnk from "./pages/register/sim-stnk";
 import VehicleDamage from "./pages/register/kerusakan-kendaraan";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import Test from "./pages/test";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
               element={<VehicleDamage />}
             />
             <Route path="/register/sim-stnk" element={<FormSimStnk />} />
+            <Route path="/test" element={<Test />} />
           </Routes>
         </BrowserRouter>
       </Provider>

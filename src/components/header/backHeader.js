@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { ArrowLeft } from "react-feather";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +19,9 @@ export default function BackHeader({ title, prevPage }) {
         }}
       >
         <ArrowLeft color="#1103a6" />
-        <Box sx={{ marginLeft: "10px", fontWeight: "bold" }}>{title}</Box>
+        <Box sx={{ marginLeft: "10px", fontWeight: "bold" }}>
+          <Typography sx={{ fontWeight: "bold" }}>{title}</Typography>
+        </Box>
       </Box>
     </header>
   );

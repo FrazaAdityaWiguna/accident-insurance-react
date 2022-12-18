@@ -23,7 +23,7 @@ export default function VehicleDamage() {
   const stateImgsAccidents = useSelector((state) => state.dataImgsAccidents);
 
   useEffect(() => {
-    setDataImgsAccidents(stateImgsAccidents);
+    if (stateImgsAccidents) setDataImgsAccidents(stateImgsAccidents);
   }, []);
 
   const handleDelete = (index) => {
@@ -157,6 +157,7 @@ export default function VehicleDamage() {
             m: "20px 0",
             textTransform: "capitalize",
           }}
+          disabled={dataImgsAccidents.length <= 0}
           onClick={() => {
             dispatch(
               addImgsAccidents({

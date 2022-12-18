@@ -14,7 +14,7 @@ import { Clipboard } from "react-feather";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import BoxDesc from "../../components/boxLayout/BoxDesc";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import moment from "moment";
@@ -26,7 +26,9 @@ import { useNavigate } from "react-router-dom";
 export default function FormClaim() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const formRef = useRef();
   const dataIns = useSelector((state) => state.dataInsurance);
+  const [emptyFields, setEmptyFields] = useState(0);
   const [dataInsurance, setDataInsurance] = useState({
     namaPengemudi: "",
     warnaMobil: "",
@@ -37,15 +39,43 @@ export default function FormClaim() {
   });
 
   useEffect(() => {
-    setDataInsurance({
-      namaPengemudi: dataIns?.namaPengemudi,
-      warnaMobil: dataIns?.warnaMobil,
-      tanggalKejadian: dataIns?.tanggalKejadian,
-      tahunPembuatan: dataIns?.tahunPembuatan,
-      hubunganTangunggan: dataIns?.hubunganTangunggan,
-      penyebabKecelakaan: dataIns?.penyebabKecelakaan,
-    });
+    if (dataIns) {
+      setDataInsurance({
+        namaPengemudi: dataIns.namaPengemudi,
+        warnaMobil: dataIns.warnaMobil,
+        tanggalKejadian: dataIns.tanggalKejadian,
+        tahunPembuatan: dataIns.tahunPembuatan,
+        hubunganTangunggan: dataIns.hubunganTangunggan,
+        penyebabKecelakaan: dataIns.penyebabKecelakaan,
+      });
+    }
   }, []);
+
+  const handleInputChange = (e, index) => {
+    if (index) {
+      setDataInsurance((prev) => ({
+        ...prev,
+        [index]: e,
+      }));
+
+      if (!e) {
+        setEmptyFields(emptyFields + 1);
+      } else {
+        setEmptyFields(emptyFields - 1);
+      }
+    } else {
+      setDataInsurance((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.value,
+      }));
+
+      if (!e.target.value) {
+        setEmptyFields(emptyFields + 1);
+      } else {
+        setEmptyFields(emptyFields - 1);
+      }
+    }
+  };
 
   return (
     <>
@@ -107,157 +137,160 @@ export default function FormClaim() {
           </Box>
         </Box>
 
-        <Box
-          sx={{
-            border: "1px solid #eee",
-            borderRadius: "5px",
-            display: "flex",
-            padding: "10px 15px 30px",
-            flexDirection: "column",
-          }}
-        >
-          <TextField
-            id="outlined-multiline-flexible"
-            label="Nama Pengemudi"
-            multiline
-            maxRows={4}
-            variant="standard"
-            value={dataInsurance.namaPengemudi}
-            sx={{ color: "#5f52eb", mb: "10px" }}
-            placeholder="Masukan Nama Pengemudi"
-            onChange={(e) =>
-              setDataInsurance((prev) => ({
-                ...prev,
-                namaPengemudi: e.target.value,
-              }))
-            }
-          />
-
-          <FormControl variant="standard" sx={{ minWidth: 120, mb: "10px" }}>
-            <InputLabel id="demo-simple-select-standard-label">
-              Lain-lain
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              value={dataInsurance.warnaMobil}
-              onChange={(e) =>
-                setDataInsurance((prev) => ({
-                  ...prev,
-                  warnaMobil: e.target.value,
-                }))
-              }
-              label="Lain-lain"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value="Merah">Merah</MenuItem>
-              <MenuItem value="Hitam">Hitam</MenuItem>
-              <MenuItem value="Putih">Putih</MenuItem>
-              <MenuItem value="Lainnya">Lainnya</MenuItem>
-            </Select>
-          </FormControl>
-
-          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={id}>
-            <DesktopDatePicker
-              label="Date desktop"
-              inputFormat="ii MMMM yyyy"
-              value={
-                dataInsurance.tanggalKejadian
-                  ? moment(dataInsurance.tanggalKejadian).locale("id")
-                  : null
-              }
-              disableMaskedInput
-              onChange={(e) =>
-                setDataInsurance((prev) => ({
-                  ...prev,
-                  tanggalKejadian: e,
-                }))
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Tanggal dan Waktu Kejadian"
-                  variant="standard"
-                  sx={{ mb: "10px" }}
-                />
-              )}
+        <Box component="form">
+          <Box
+            sx={{
+              border: "1px solid #eee",
+              borderRadius: "5px",
+              display: "flex",
+              padding: "10px 15px 30px",
+              flexDirection: "column",
+            }}
+            ref={formRef}
+          >
+            <TextField
+              id="outlined-multiline-flexible"
+              label="Nama Pengemudi"
+              multiline
+              maxRows={4}
+              variant="standard"
+              value={dataInsurance.namaPengemudi}
+              sx={{ color: "#5f52eb", mb: "10px" }}
+              placeholder="Masukan Nama Pengemudi"
+              name="namaPengemudi"
+              onChange={(e) => handleInputChange(e)}
+              required
             />
-          </LocalizationProvider>
 
-          <FormControl variant="standard" sx={{ minWidth: 120, mb: "20px" }}>
-            <InputLabel id="demo-simple-select-standard-label">
-              Lain-lain
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              value={dataInsurance.tahunPembuatan}
-              onChange={(e) =>
-                setDataInsurance((prev) => ({
-                  ...prev,
-                  tahunPembuatan: e.target.value,
-                }))
-              }
-              label="Lain-lain"
+            <FormControl
+              variant="standard"
+              sx={{ minWidth: 120, mb: "10px" }}
+              required
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={2008}>2008</MenuItem>
-              <MenuItem value={2009}>2009</MenuItem>
-              <MenuItem value={2011}>2011</MenuItem>
-              <MenuItem value={2012}>2012</MenuItem>
-              <MenuItem value={2019}>2019</MenuItem>
-              <MenuItem value="Lainnya">Lainnya</MenuItem>
-            </Select>
-          </FormControl>
+              <InputLabel id="demo-simple-select-standard-label">
+                Lain-lain
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={dataInsurance.warnaMobil}
+                name="warnaMobil"
+                onChange={(e) => handleInputChange(e)}
+                label="Lain-lain"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value="Merah">Merah</MenuItem>
+                <MenuItem value="Hitam">Hitam</MenuItem>
+                <MenuItem value="Putih">Putih</MenuItem>
+                <MenuItem value="Lainnya">Lainnya</MenuItem>
+              </Select>
+            </FormControl>
 
-          <Input
-            placeholder="Silakan isi hubungan dengan tanggungan"
-            sx={{ mb: "20px" }}
-            value={dataInsurance.hubunganTangunggan}
-            onChange={(e) =>
-              setDataInsurance((prev) => ({
-                ...prev,
-                hubunganTangunggan: e.target.value,
-              }))
-            }
-          />
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={id}
+            >
+              <DesktopDatePicker
+                label="Date desktop"
+                inputFormat="dd MMMM yyyy"
+                value={
+                  dataInsurance.tanggalKejadian
+                    ? moment(dataInsurance.tanggalKejadian).locale("id")
+                    : null
+                }
+                disableMaskedInput
+                name="tanggalKejadian"
+                onChange={(e) => handleInputChange(e, "tanggalKejadian")}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Tanggal dan Waktu Kejadian"
+                    variant="standard"
+                    sx={{ mb: "10px" }}
+                    name="tanggalKejadian"
+                    required
+                  />
+                )}
+              />
+            </LocalizationProvider>
 
-          <Input
-            placeholder="Silakan isi penyebab"
-            multiline
-            value={dataInsurance.penyebabKecelakaan}
-            onChange={(e) =>
-              setDataInsurance((prev) => ({
-                ...prev,
-                penyebabKecelakaan: e.target.value,
-              }))
-            }
-          />
+            <FormControl
+              variant="standard"
+              sx={{ minWidth: 120, mb: "20px" }}
+              required
+            >
+              <InputLabel id="demo-simple-select-standard-label">
+                Lain-lain
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={dataInsurance.tahunPembuatan}
+                name="tahunPembuatan"
+                onChange={(e) => handleInputChange(e)}
+                label="Lain-lain"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={2008}>2008</MenuItem>
+                <MenuItem value={2009}>2009</MenuItem>
+                <MenuItem value={2011}>2011</MenuItem>
+                <MenuItem value={2012}>2012</MenuItem>
+                <MenuItem value={2019}>2019</MenuItem>
+                <MenuItem value="Lainnya">Lainnya</MenuItem>
+              </Select>
+            </FormControl>
+
+            <Input
+              placeholder="Silakan isi hubungan dengan tanggungan"
+              sx={{ mb: "20px" }}
+              value={dataInsurance.hubunganTangunggan}
+              name="hubunganTangunggan"
+              onChange={(e) => handleInputChange(e)}
+              required
+            />
+
+            <Input
+              placeholder="Silakan isi penyebab"
+              multiline
+              value={dataInsurance.penyebabKecelakaan}
+              name="penyebabKecelakaan"
+              onChange={(e) => handleInputChange(e)}
+              required
+            />
+          </Box>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              backgroundColor: "#0fba09",
+              width: "100%",
+              m: "20px 0",
+              textTransform: "capitalize",
+            }}
+            disabled={Boolean(
+              !dataInsurance.namaPengemudi ||
+                !dataInsurance.warnaMobil ||
+                !dataInsurance.tanggalKejadian ||
+                !dataInsurance.tahunPembuatan ||
+                !dataInsurance.hubunganTangunggan ||
+                !dataInsurance.penyebabKecelakaan
+            )}
+            onClick={() => {
+              dispatch(
+                addDataInsurance({
+                  dataInsurance: dataInsurance,
+                })
+              );
+              navigate("/register/sim-stnk");
+            }}
+          >
+            Simpan
+          </Button>
         </Box>
-
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#0fba09",
-            width: "100%",
-            m: "20px 0",
-            textTransform: "capitalize",
-          }}
-          onClick={() => {
-            dispatch(
-              addDataInsurance({
-                dataInsurance: dataInsurance,
-              })
-            );
-            navigate("/register/sim-stnk");
-          }}
-        >
-          Simpan
-        </Button>
       </Container>
     </>
   );

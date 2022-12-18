@@ -20,11 +20,13 @@ export default function FormSimStnk() {
   });
 
   useEffect(() => {
-    setDataImgs({
-      fotoSIM: stateImgs?.fotoSIM,
-      fotoSTNK: stateImgs?.fotoSTNK,
-      fotoKTPTertanggung: stateImgs?.fotoKTPTertanggung,
-    });
+    if (stateImgs) {
+      setDataImgs({
+        fotoSIM: stateImgs.fotoSIM,
+        fotoSTNK: stateImgs.fotoSTNK,
+        fotoKTPTertanggung: stateImgs.fotoKTPTertanggung,
+      });
+    }
   }, []);
 
   return (
@@ -56,57 +58,65 @@ export default function FormSimStnk() {
             <BoxDesc title="No. Polis" content="VCL2007001" />
           </Box>
         </Box>
-        <Stack spacing={2} mb="20px">
-          <FieldUpload
-            title="Foto SIM"
-            content="Upload Foto SIM"
-            contentImg={dataImgs.fotoSIM}
-            info="*Data pada SIM harus terlihat jelas"
-            handleChange={(e) => {
-              setDataImgs((prev) => ({ ...prev, fotoSIM: e }));
-            }}
-          />
+        <Box components="form">
+          <Stack spacing={2} mb="20px">
+            <FieldUpload
+              title="Foto SIM"
+              content="Upload Foto SIM"
+              contentImg={dataImgs.fotoSIM}
+              info="*Data pada SIM harus terlihat jelas"
+              handleChange={(e) => {
+                setDataImgs((prev) => ({ ...prev, fotoSIM: e }));
+              }}
+            />
 
-          <FieldUpload
-            title="Foto STNK"
-            content="Upload Foto STNK"
-            contentImg={dataImgs.fotoSTNK}
-            info="*Data pada STNK harus terlihat jelas"
-            handleChange={(e) =>
-              setDataImgs((prev) => ({ ...prev, fotoSTNK: e }))
-            }
-          />
+            <FieldUpload
+              title="Foto STNK"
+              content="Upload Foto STNK"
+              contentImg={dataImgs.fotoSTNK}
+              info="*Data pada STNK harus terlihat jelas"
+              handleChange={(e) =>
+                setDataImgs((prev) => ({ ...prev, fotoSTNK: e }))
+              }
+            />
 
-          <FieldUpload
-            title="Foto KTP Tertanggung"
-            content="Upload Foto KTP"
-            contentImg={dataImgs.fotoKTPTertanggung}
-            info="*Data pada KTP Tertanggung harus terlihat jelas"
-            handleChange={(e) =>
-              setDataImgs((prev) => ({ ...prev, fotoKTPTertanggung: e }))
-            }
-          />
+            <FieldUpload
+              title="Foto KTP Tertanggung"
+              content="Upload Foto KTP"
+              contentImg={dataImgs.fotoKTPTertanggung}
+              info="*Data pada KTP Tertanggung harus terlihat jelas"
+              handleChange={(e) =>
+                setDataImgs((prev) => ({ ...prev, fotoKTPTertanggung: e }))
+              }
+            />
 
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#0fba09",
-              width: "100%",
-              m: "20px 0",
-              textTransform: "capitalize",
-            }}
-            onClick={() => {
-              dispatch(
-                addDataImgs({
-                  dataImgs: dataImgs,
-                })
-              );
-              navigate("/register/kerusakan-kendaraan");
-            }}
-          >
-            Simpan
-          </Button>
-        </Stack>
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{
+                backgroundColor: "#0fba09",
+                width: "100%",
+                m: "20px 0",
+                textTransform: "capitalize",
+              }}
+              disabled={
+                !dataImgs.fotoSIM ||
+                !dataImgs.fotoSTNK ||
+                !dataImgs.fotoKTPTertanggung
+              }
+              onClick={() => {
+                dispatch(
+                  addDataImgs({
+                    dataImgs: dataImgs,
+                  })
+                );
+                navigate("/register/kerusakan-kendaraan");
+              }}
+            >
+              Simpan
+            </Button>
+          </Stack>
+        </Box>
       </Container>
     </>
   );
