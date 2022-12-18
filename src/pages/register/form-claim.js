@@ -14,7 +14,7 @@ import { Clipboard } from "react-feather";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import BoxDesc from "../../components/boxLayout/BoxDesc";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import moment from "moment";
@@ -26,9 +26,7 @@ import { useNavigate } from "react-router-dom";
 export default function FormClaim() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const formRef = useRef();
   const dataIns = useSelector((state) => state.dataInsurance);
-  const [emptyFields, setEmptyFields] = useState(0);
   const [dataInsurance, setDataInsurance] = useState({
     namaPengemudi: "",
     warnaMobil: "",
@@ -39,7 +37,7 @@ export default function FormClaim() {
   });
 
   useEffect(() => {
-    if (dataIns) {
+    if (Object.entries(dataIns).length !== 0) {
       setDataInsurance({
         namaPengemudi: dataIns.namaPengemudi,
         warnaMobil: dataIns.warnaMobil,
@@ -57,23 +55,11 @@ export default function FormClaim() {
         ...prev,
         [index]: e,
       }));
-
-      if (!e) {
-        setEmptyFields(emptyFields + 1);
-      } else {
-        setEmptyFields(emptyFields - 1);
-      }
     } else {
       setDataInsurance((prev) => ({
         ...prev,
         [e.target.name]: e.target.value,
       }));
-
-      if (!e.target.value) {
-        setEmptyFields(emptyFields + 1);
-      } else {
-        setEmptyFields(emptyFields - 1);
-      }
     }
   };
 
@@ -146,7 +132,6 @@ export default function FormClaim() {
               padding: "10px 15px 30px",
               flexDirection: "column",
             }}
-            ref={formRef}
           >
             <TextField
               id="outlined-multiline-flexible"
